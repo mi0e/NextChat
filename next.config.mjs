@@ -9,11 +9,12 @@ console.log("[Next] build with chunk: ", !disableChunk);
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   webpack(config) {
+    config.cache = false; // 禁用缓存
     config.module.rules.push({
       test: /\.svg$/,
       use: ["@svgr/webpack"],
     });
-
+    
     if (disableChunk) {
       config.plugins.push(
         new webpack.optimize.LimitChunkCountPlugin({ maxChunks: 1 }),
@@ -26,6 +27,11 @@ const nextConfig = {
 
     return config;
   },
+  
+  experimental: {
+    outputFileTracingIgnores: ['**cache**'], // 忽略缓存文件
+  },
+  
   output: mode,
   images: {
     unoptimized: mode === "export",
